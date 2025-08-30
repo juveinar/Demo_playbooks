@@ -1,0 +1,22 @@
+---
+- name: Playbook par obtener informacion Sistema Operativo con comandos Linux
+  hosts: all
+  gather_facts: no   # No recolectamos facts, lo hacemos manualmente
+  become: false
+
+  tasks:
+    - name: Obtener hostname
+      ansible.builtin.command: hostname
+      register: hostname_cmd
+
+    - name: Mostrar hostname
+      ansible.builtin.debug:
+        msg: "El hostname es: {{ hostname_cmd.stdout }}"
+
+    - name: Obtener versión de SO (Linux)
+      ansible.builtin.shell: cat /etc/os-release | grep PRETTY_NAME | cut -d= -f2 | tr -d '\"'
+      register: os_version_cmd
+
+    - name: Mostrar versión de SO
+      ansible.builtin.debug:
+        msg: "El sistema operativo es: {{ os_version_cmd.stdout }}"
