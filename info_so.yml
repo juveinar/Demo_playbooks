@@ -1,0 +1,14 @@
+---
+- name: Obtener información basica del host remoto (usando modulos ansible)
+  hosts: all
+  gather_facts: yes
+  become: false
+
+  tasks:
+    - name: Mostrar hostname del host remoto
+      ansible.builtin.debug:
+        msg: "El hostname es: {{ ansible_hostname }}"
+
+    - name: Mostrar versión del sistema operativo
+      ansible.builtin.debug:
+        msg: "El sistema operativo es: {{ ansible_distribution }} {{ ansible_distribution_version }}"
