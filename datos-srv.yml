@@ -56,10 +56,7 @@
     # Tarea 6: Mostrar direcciones IP
     - name: Mostrar las direcciones IPv4 del servidor
       ansible.builtin.debug:
-        msg: "Direcciones IPv4: {{ ansible_facts['all_ipv4_addresses'] | join(', ') }}"
-      tags:
-        - network
-        - info
+        msg: "Direcciones IPv4: {{ ansible_facts['all_ipv4_addresses'] | default(['No se encontraron direcciones IPv4.']) | join(', ') }}"
         
     # Tarea 7: Obtener la informacion de los discos con el comando lsblk
     - name: Obtener informacion de los discos con lsblk
