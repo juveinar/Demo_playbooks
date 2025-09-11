@@ -1,0 +1,53 @@
+---
+- name: Recopilar informacion detallada del servidor y version de Python
+  hosts: all
+  become: true  # Permite que las tareas se ejecuten con privilegios de root
+  gather_facts: true  # Recolecta hechos (facts) por defecto de Ansible
+
+  # Las tareas deben tener nombres claros y descriptivos
+  tasks:
+    # Tarea 1: Mostrar informacion basica del sistema
+    - name: Mostrar hechos del sistema operativo
+      ansible.builtin.debug:
+        msg: |
+          Nombre del OS: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+          Kernel: {{ ansible_facts['kernel'] }}
+          Familia del OS: {{ ansible_facts['os_family'] }}
+      tags:
+        - info
+    
+    # Tarea 2: Obtener la version de Python del sistema
+    # Utilizamos el modulo command para una tarea especifica que no tiene un modulo nativo simple
+    - name: Obtener la version de Python
+      ansible.builtin.command: python3 --version
+      register: python_version  # Registramos la salida del comando en una variable
+      changed_when: false  # Evita que Ansible marque esta tarea como "changed" ya que no modifica el sistema
+      ignore_errors: true  # Permite que el playbook continue si el comando falla
+      tags:
+        - python
+        - info
+    
+    # Tarea 3: Mostrar la version de Python si se encontro
+    - name: Mostrar version de Python si esta instalada
+      ansible.builtin.debug:
+        msg: "Version de Python: {{ python_version.stdout }}"
+      when: python_version.rc == 0  # Solo muestra el resultado si el comando fue exitoso
+      tags:
+        - python
+        - info
+
+    # Tarea 4: Recopilar y mostrar informacion de los discos
+    # Utilizamos el modulo de la coleccion community.general para obtener informacion de los discos
+    - name: Obtener facts sobre los discos
+      community.general.parted_facts:
+      register: disk_facts
+      tags:
+        - disk
+        - info
+
+    - name: Mostrar detalles de discos y particiones
+      ansible.builtin.debug:
+        msg: "Discos: {{ disk_facts.partitions | default('No se encontraron particiones.') }}"
+      tags:
+        - disk
+        - info
