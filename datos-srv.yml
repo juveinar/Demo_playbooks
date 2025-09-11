@@ -52,8 +52,16 @@
       tags:
         - selinux
         - info
+   
+    # Tarea 6: Mostrar direcciones IP
+    - name: Mostrar las direcciones IPv4 del servidor
+      ansible.builtin.debug:
+        msg: "Direcciones IPv4: {{ ansible_facts['all_ipv4_addresses'] | join(', ') }}"
+      tags:
+        - network
+        - info
         
-    # Tarea 6: Obtener la informacion de los discos con el comando lsblk
+    # Tarea 7: Obtener la informacion de los discos con el comando lsblk
     - name: Obtener informacion de los discos con lsblk
       ansible.builtin.shell: lsblk -J
       register: disk_info_shell
@@ -62,7 +70,7 @@
         - disk
         - info
 
-    # Tarea 7: Mostrar la informacion de los discos
+    # Tarea 8: Mostrar la informacion de los discos
     - name: Mostrar informacion de los discos
       ansible.builtin.debug:
         msg: "{{ disk_info_shell.stdout | from_json }}"
