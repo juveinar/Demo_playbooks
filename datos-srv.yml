@@ -5,6 +5,14 @@
   gather_facts: true
 
   tasks:
+    - name: Obtener hostname
+      ansible.builtin.command: uname -n
+      register: hostname_cmd
+
+    - name: Mostrar hostname
+      ansible.builtin.debug:
+        msg: "El hostname es: {{ hostname_cmd.stdout }}"
+        
     # Tarea 1: Mostrar informacion basica del sistema
     - name: Mostrar hechos del sistema operativo
       ansible.builtin.debug:
