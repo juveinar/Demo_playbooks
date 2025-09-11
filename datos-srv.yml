@@ -1,7 +1,7 @@
 ---
 - name: Recopilar informacion detallada del servidor y version de Python
   hosts: all
-  become: true
+  become: no
   gather_facts: true
 
   tasks:
