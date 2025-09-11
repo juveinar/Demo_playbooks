@@ -34,7 +34,26 @@
         - python
         - info
         
-    # Tarea 4: Obtener la informacion de los discos con el comando lsblk
+    # Tarea 4: Obtener el estado de SELinux
+    - name: Obtener el estado de SELinux
+      ansible.builtin.command: sestatus
+      register: selinux_status
+      changed_when: false
+      ignore_errors: true
+      tags:
+        - selinux
+        - info
+
+    # Tarea 5: Mostrar el estado de SELinux
+    - name: Mostrar el estado de SELinux
+      ansible.builtin.debug:
+        msg: "Estado de SELinux:\n{{ selinux_status.stdout }}"
+      when: selinux_status.rc == 0
+      tags:
+        - selinux
+        - info
+        
+    # Tarea 6: Obtener la informacion de los discos con el comando lsblk
     - name: Obtener informacion de los discos con lsblk
       ansible.builtin.shell: lsblk -J
       register: disk_info_shell
@@ -43,7 +62,7 @@
         - disk
         - info
 
-    # Tarea 5: Mostrar la informacion de los discos
+    # Tarea 7: Mostrar la informacion de los discos
     - name: Mostrar informacion de los discos
       ansible.builtin.debug:
         msg: "{{ disk_info_shell.stdout | from_json }}"
